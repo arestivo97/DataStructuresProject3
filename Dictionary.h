@@ -171,6 +171,17 @@ string findDefinitionAVL(Node* current, string search_word) {
 	return "DNE";
 }
 
+//This printInorder creates a vector of all the nodes in the tree in a inorder manner
+void printInorder(Node* head, vector<string>* ptrWL) {
+	if (head == NULL)
+		cout << "";
+	else {
+		printInorder(head->left, ptrWL);
+		ptrWL->push_back(head->word);
+		printInorder(head->right, ptrWL);
+	}
+}
+
 string spellCheckAVL(Node* current, string word) {
     vector<string> wordList;
 	vector<string>* ptrWordList = &wordList;
@@ -178,7 +189,7 @@ string spellCheckAVL(Node* current, string word) {
 	string suggestedWord;
 	int switchKey = 0;
 	for (unsigned int i = 0; i < wordList.size(); i++) {
-		if (wordList[i] > findWord && switchKey == 0) {
+		if (wordList[i] > word && switchKey == 0) {
 			suggestedWord = wordList[i];
 			switchKey = 1;
 		}
