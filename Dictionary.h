@@ -5,13 +5,25 @@ Authors: Andrew Restivo, Darren Peters, Adam Slavny
 COP3530 - Data Structures
 Project 3: Dictionary and Spell Checker
 Language: C++
-Data Structures used: AVL Tree and Heap
+Data Structures used: AVL Tree and Trie Tree
 functions:
     find definition
     spell check
     spelling suggestions
 */
-
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <string>
+#include <map>
+#include <iomanip>
+#include <chrono>
+#include <thread>
+#include <math.h>
+#include <stdio.h>
+#include <unistd.h>
+using namespace std;
 #ifndef Dictionary_H
 #define Dictionary_H
 
@@ -144,11 +156,23 @@ Node* insert(Node* node, string input_word, string input_partOfSpeech, string in
 	return node;
 }
 
-//class Heap
+string findDefinitionAVL(Node* node, string word) {
+	string def = "DNE";
+	//def = definition
+	return def;
+}
+
+string spellCheckAVL(Node* node, string word) {
+	string def = "DNE";
+	//def = definition
+	return def;
+}
+
+//class Trie
 
 
 
-//methods for Heap
+//methods for Trie
 
 
 
@@ -156,5 +180,18 @@ Node* insert(Node* node, string input_word, string input_partOfSpeech, string in
 
 
 
+
+
+string findDefinitionTrie(string word) {
+	string def = "DNE";
+	//def = definition
+	return def;
+}
+
+string spellCheckTrie(string word) {
+	string def = "DNE";
+	//def = definition
+	return def;
+}
 
 #endif /* Dictionary_H */
