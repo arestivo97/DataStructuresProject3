@@ -44,58 +44,114 @@ void readFiletoTree() {
     file.close();
 }
 
+//compares time between using heap and tree
+void timeComp(microseconds timeHeap, microseconds timeTree) {
+    if (timeHeap.count() < timeTree.count()) {
+        cout << "Tree is " << ((timeHeap.count()-timeTree.count())/timeHeap.count())*100 << "% faster." << endl;
+    } else {
+        cout << "Heap is " << ((timeTree.count()-timeHeap.count())/timeTree.count())*100 << "% faster." << endl;
+    }
+}
+
+/*
+spell checker submenu
+    runs continuously until \back
+    similar to definition finder
+*/
 void spellChecker(string mode) {
     string spellCheck = "";
-    cout << "Type '\\Back' to return to the Main Menu";
-    cout << "\nEnter your input for spellchecking:" << endl;
-    cin >> spellCheck;
-    /*
-    spellCheckWord(mode, spellCheck)
-    if word found, print that word was spelled correctly
-    else, print provide possible correction(s)
-    */
+    while(spellCheck != "\\Back") {
+        cout << "Type '\\Back' to return to the Main Menu";
+        cout << "\nEnter your input for spellchecking:" << endl;
+        cin >> spellCheck;
+        if (spellCheck == "\\Back") {
+            return;
+        }
+        string correction = spellCheck;
+        microseconds spellCheckDurationHeap, spellCheckDurationTree;
+        if (mode == "Heap" || mode == "Comparison") {
+            auto start = high_resolution_clock::now();
+            //correction = spellCheckHeap(spellCheck)
+            auto stop = high_resolution_clock::now();
+            spellCheckDurationHeap = duration_cast<microseconds>(stop - start); 
+        } else if (mode == "Tree" || mode == "Comparison") {
+            auto start = high_resolution_clock::now();
+            //correction = spellCheckTree(spellCheck)
+            auto stop = high_resolution_clock::now();
+            spellCheckDurationTree = duration_cast<microseconds>(stop - start); 
+        }
+        if (correction == spellCheck) {
+            cout << "Your input, '" << spellCheck << "', is spelled correctly." << endl;
+        } else {
+            cout << "Correct spelling: " << correction << endl;
+        }
+
+        if (mode == "Heap" || mode == "Comparison") {
+            cout << "It took " << spellCheckDurationHeap.count() << " microseconds using Heap mode." << endl;
+        } else if (mode == "Tree" || mode == "Comparison") {
+            cout << "It took " << spellCheckDurationTree.count() << " microseconds using Tree mode." << endl;
+        }
+        if (mode == "Comparison") {
+            timeComp(spellCheckDurationHeap,spellCheckDurationTree);
+        }
+    }
+    return;
 }
 
+//spell checker without the submenu
+//has different logic at the correction output stage?
 void spellChecker(string mode, string input) {
-    /*
-    spellCheckWord(mode, input)
-    print possible correction(s)
-    */
+    string correction = input;
+    microseconds spellCheckDurationHeap, spellCheckDurationTree;
+    if (mode == "Heap" || mode == "Comparison") {
+        auto start = high_resolution_clock::now();
+        //correction = spellCheckHeap(input)
+        auto stop = high_resolution_clock::now();
+        spellCheckDurationHeap = duration_cast<microseconds>(stop - start); 
+    } else if (mode == "Tree" || mode == "Comparison") {
+        auto start = high_resolution_clock::now();
+        //correction = spellCheckTree(input)
+        auto stop = high_resolution_clock::now();
+        spellCheckDurationTree = duration_cast<microseconds>(stop - start); 
+    }
+    cout << "Correct spelling: " << correction << endl;
+
+    if (mode == "Heap" || mode == "Comparison") {
+        cout << "It took " << spellCheckDurationHeap.count() << " microseconds using Heap mode." << endl;
+    } else if (mode == "Tree" || mode == "Comparison") {
+        cout << "It took " << spellCheckDurationTree.count() << " microseconds using Tree mode." << endl;
+    }
+    if (mode == "Comparison") {
+        timeComp(spellCheckDurationHeap,spellCheckDurationTree);
+    }
 }
 
+//these should be class functions
 string findDefinitionHeap(string word) {
     string def = "DNE";
     //def = heap.definition
     //return def
 }
-
-//these should be class functions
 string findDefinitionTree(string word) {
     string def = "DNE";
     //def = tree.definition
     //return def
 }
 
-void timeComp(float timeHeap, float timeTree) {
-
-}
-
 int main() {
+    //reads file and adds to Data Structures, tracking time it takes
     auto start = high_resolution_clock::now();
     readFiletoHeap();
     auto stop = high_resolution_clock::now();
-    auto heapDuration = duration_cast<microseconds>(stop - start); 
+    auto heapDuration = duration_cast<microseconds>(stop - start);
     cout << heapDuration.count() << " microseconds to create the heap dictionary." << endl;
     auto start = high_resolution_clock::now();
     readFiletoTree();
     auto stop = high_resolution_clock::now();
-    auto treeDuration = duration_cast<microseconds>(stop - start); 
+    auto treeDuration = duration_cast<microseconds>(stop - start);
     cout << treeDuration.count() << " microseconds to create the tree dictionary." << endl;
-    if (treeDuration.count() < heapDuration.count()) {
-        cout << "Tree is " << ((heapDuration.count()-treeDuration.count())/heapDuration.count())*100 << "% faster to create." << endl;
-    } else {
-        cout << "Heap is " << ((treeDuration.count()-heapDuration.count())/treeDuration.count())*100 << "% faster to create." << endl;
-    }
+    timeComp(heapDuration,treeDuration);
+
     string mode = "Heap";
     string input = "";
     while(input != "\\Exit") {
@@ -113,8 +169,8 @@ int main() {
             cout << "\n\tType '3' for a comparison mode of Heap and AVL Tree Structures"; //#5
             cout << "\n\tType '\\Exit' to exit the program anytime" << endl; //#7
         } else if (input == "\\Spell Checker") {
-            spellChecker(mode);
-        } else if (input == "1") {
+            spellChecker(mode);//enter spell checker mode
+        } else if (input == "1") {//change to heap mode
             if (mode == input) {
                cout << "It is already in Heap mode!" << endl; 
             } else {
@@ -128,7 +184,7 @@ int main() {
                 cout << "."; 
                 sleep_for(nanoseconds(50));
             }
-        } else if (input == "2") {
+        } else if (input == "2") {//change to tree mode
             if (mode == input) {
                cout << "It is already in AVL Tree mode!" << endl; 
             } else {
@@ -142,7 +198,7 @@ int main() {
                 cout << "."; 
                 sleep_for(nanoseconds(50));
             }
-        } else if (input == "3") {
+        } else if (input == "3") {//change to comparison mode
             if (mode == input) {
                cout << "It is already in Comparison mode!" << endl; 
             } else {
@@ -156,43 +212,52 @@ int main() {
                 cout << "."; 
                 sleep_for(nanoseconds(50));
             }
-        } else if (input == "\\Exit") {
+        } else if (input == "\\Exit") {//exit program
             return 0;
-        } else {
+        } else {//finds definition - should be a function
             string def = "DNE";
+            microseconds findDefDurationHeap, findDefDurationTree;
             if (mode == "Heap" || mode == "Comparison") {
                 auto start = high_resolution_clock::now();
                 def = findDefinitionHeap(input); //**simple, returns definition
                 auto stop = high_resolution_clock::now();
-                auto findDefDurationHeap = duration_cast<microseconds>(stop - start); 
+                findDefDurationHeap = duration_cast<microseconds>(stop - start); 
             } else if (mode == "Tree" || mode == "Comparison") {
                 //find using tree *comparison will run both
                 auto start = high_resolution_clock::now();
                 def = findDefinitionTree(input); //**simple, returns definition
                 auto stop = high_resolution_clock::now();
-                auto findDefDurationTree = duration_cast<microseconds>(stop - start); 
+                findDefDurationTree = duration_cast<microseconds>(stop - start); 
             }
         
-            if (def == "DNE") {
+            if (def == "DNE") {//if word does not exit
                 char ans;
-                cout << "Your input, '" << input << "', was not found. It took " << findDefDuration.count() << " microseconds. Would you like to enter Spell Checker mode? (Y/N)" << endl;
+                cout << "Your input, '" << input << "', was not found." << endl;
+
+                if (mode == "Heap" || mode == "Comparison") {
+                    cout << "It took " << findDefDurationHeap.count() << " microseconds using Heap mode." << endl;
+                } else if (mode == "Tree" || mode == "Comparison") {
+                    cout << "It took " << findDefDurationTree.count() << " microseconds using Tree mode." << endl;
+                }
+                if (mode == "Comparison") {
+                    timeComp(findDefDurationHeap,findDefDurationTree);
+                }
+                cout << "Would you like to enter Spell Checker mode? (Y/N)" << endl;
                 cin >> ans;
                 if (ans == 'Y') {
-                    //spellChecker(mode, input);
-            } else {
-                cout << input << ": " << def << endl;
+                    spellChecker(mode, input);
+                }
+            } else {//if word exists
+                cout << def << endl;
                 if (mode == "Heap" || mode == "Comparison") {
                     cout << "It took " << findDefDurationHeap.count() << " microseconds to find the defintion using Heap mode." << endl;
-                    auto findDefDurationHeap = duration_cast<microseconds>(stop - start); 
                 } else if (mode == "Tree" || mode == "Comparison") {
                     cout << "It took " << findDefDurationTree.count() << " microseconds to find the defintion using Tree mode." << endl;
                 }
                 if (mode == "Comparison") {
-
+                    timeComp(findDefDurationHeap,findDefDurationTree);
                 }
-                
             }
-
 
         }
     }
