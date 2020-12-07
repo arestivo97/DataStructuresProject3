@@ -76,8 +76,7 @@ string findDefinitionTree(string word) {
     //return def
 }
 
-void timeComp(float timeHeap, float time
-) {
+void timeComp(float timeHeap, float timeTree) {
 
 }
 
