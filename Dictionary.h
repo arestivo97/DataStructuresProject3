@@ -5,7 +5,7 @@ Authors: Andrew Restivo, Darren Peters, Adam Slavny
 COP3530 - Data Structures
 Project 3: Dictionary and Spell Checker
 Language: C++
-Data Structures used: AVL Tree and Trie Tree
+Data Structures used: AVL Tree and Trie
 functions:
     find definition
     spell check
@@ -16,13 +16,9 @@ functions:
 #include <sstream>
 #include <vector>
 #include <string>
-#include <map>
-#include <iomanip>
 #include <chrono>
 #include <thread>
 #include <math.h>
-#include <stdio.h>
-#include <unistd.h>
 using namespace std;
 #ifndef Dictionary_H
 #define Dictionary_H
@@ -116,7 +112,7 @@ Node* insert(Node* node, string input_word, string input_partOfSpeech, string in
 	//Preform recursive insertion
 	if (node == NULL) {
 		Node* temp_node = createAvlNode(input_word, input_partOfSpeech, input_definition);
-		cout << "successful" << endl;
+		//cout << "successful" << endl;
 		return temp_node;
 	}
 	if (input_word < node->word)
@@ -124,10 +120,9 @@ Node* insert(Node* node, string input_word, string input_partOfSpeech, string in
 	else if (input_word > node->word)
 		node->right = insert(node->right, input_word, input_partOfSpeech, input_definition);
 	else {
-		cout << "unsuccessful" << endl;
+		//cout << "unsuccessful" << endl;
 		return node;
 	}
-
 	//Edit the height of the node in order to determine balance factor
 	node->height = max(getHeight(node->left), getHeight(node->right)) + 1;
 
@@ -156,16 +151,47 @@ Node* insert(Node* node, string input_word, string input_partOfSpeech, string in
 	return node;
 }
 
-string findDefinitionAVL(Node* node, string word) {
-	string def = "DNE";
-	//def = definition
-	return def;
+string findDefinitionAVL(Node* current, string search_word) {
+    if (current == NULL) {
+		return "DNE";
+	}
+	else {
+		if (current->word == search_word) {
+			return (current->partOfSpeech + " " + current->definition);
+		} else if (current->word > search_word) {
+			return findDefinitionAVL(current->left, search_word);
+		} else if (current->word < search_word) {
+			return findDefinitionAVL(current->right, search_word);
+		}
+	}
+	return "DNE";
 }
 
-string spellCheckAVL(Node* node, string word) {
-	string def = "DNE";
-	//def = definition
-	return def;
+//This printInorder creates a vector of all the nodes in the tree in a inorder manner
+void printInorder(Node* head, vector<string>* ptrWL) {
+	if (head == NULL)
+		cout << "";
+	else {
+		printInorder(head->left, ptrWL);
+		ptrWL->push_back(head->word);
+		printInorder(head->right, ptrWL);
+	}
+}
+
+string spellCheckAVL(Node* current, string word) {
+    vector<string> wordList;
+	vector<string>* ptrWordList = &wordList;
+	printInorder(current, ptrWordList);
+	string suggestedWord;
+	int switchKey = 0;
+	for (unsigned int i = 0; i < wordList.size(); i++) {
+		if (wordList[i] > word && switchKey == 0) {
+			suggestedWord = wordList[i];
+			switchKey = 1;
+		}
+	}
+	cout << endl;
+	return suggestedWord;
 }
 
 //class Trie
