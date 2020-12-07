@@ -16,13 +16,9 @@ functions:
 #include <sstream>
 #include <vector>
 #include <string>
-#include <map>
-#include <iomanip>
 #include <chrono>
 #include <thread>
 #include <math.h>
-#include <stdio.h>
-#include <unistd.h>
 using namespace std;
 #ifndef Dictionary_H
 #define Dictionary_H
@@ -116,7 +112,7 @@ Node* insert(Node* node, string input_word, string input_partOfSpeech, string in
 	//Preform recursive insertion
 	if (node == NULL) {
 		Node* temp_node = createAvlNode(input_word, input_partOfSpeech, input_definition);
-		cout << "successful" << endl;
+		//cout << "successful" << endl;
 		return temp_node;
 	}
 	if (input_word < node->word)
@@ -124,10 +120,9 @@ Node* insert(Node* node, string input_word, string input_partOfSpeech, string in
 	else if (input_word > node->word)
 		node->right = insert(node->right, input_word, input_partOfSpeech, input_definition);
 	else {
-		cout << "unsuccessful" << endl;
+		//cout << "unsuccessful" << endl;
 		return node;
 	}
-
 	//Edit the height of the node in order to determine balance factor
 	node->height = max(getHeight(node->left), getHeight(node->right)) + 1;
 
@@ -161,12 +156,13 @@ string findDefinitionAVL(Node* current, string search_word) {
 		return "DNE";
 	}
 	else {
-		if (current->word == search_word)
-			return current->definition;
-		else if (current->word > search_word)
+		if (current->word == search_word) {
+			return (current->partOfSpeech + " " + current->definition);
+		} else if (current->word > search_word) {
 			return findDefinitionAVL(current->left, search_word);
-		else if (current->word < search_word)
+		} else if (current->word < search_word) {
 			return findDefinitionAVL(current->right, search_word);
+		}
 	}
 	return "DNE";
 }
