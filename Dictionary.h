@@ -171,10 +171,20 @@ string findDefinitionAVL(Node* current, string search_word) {
 	return "DNE";
 }
 
-string spellCheckAVL(Node* node, string word) {
-	string def = "DNE";
-	//def = definition
-	return def;
+string spellCheckAVL(Node* current, string word) {
+    vector<string> wordList;
+	vector<string>* ptrWordList = &wordList;
+	printInorder(current, ptrWordList);
+	string suggestedWord;
+	int switchKey = 0;
+	for (unsigned int i = 0; i < wordList.size(); i++) {
+		if (wordList[i] > findWord && switchKey == 0) {
+			suggestedWord = wordList[i];
+			switchKey = 1;
+		}
+	}
+	cout << endl;
+	return suggestedWord;
 }
 
 //class Trie
