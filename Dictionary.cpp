@@ -18,7 +18,7 @@ using namespace this_thread; // sleep_for, sleep_until
 using namespace chrono; // nanoseconds, system_clock, seconds
 
 //read dictionary and add to Trie
-void readFiletoTrie() {
+Node* readFiletoTrie(Node* root) {
 	ifstream file("DictionaryFull.csv");
 	file.open("DictionaryFull.csv", ios::in);
 	string line, word, partOfSpeech, definition;
@@ -27,13 +27,14 @@ void readFiletoTrie() {
 		getline(s, word, ',');
 		getline(s, partOfSpeech, ',');
 		getline(s, definition, ',');
-		//insertTrie(word,partOfSpeech,definition);
+		//insertTrie(root, word,partOfSpeech,definition);
 	}
 	file.close();
+	return root;
 }
 
 //read dictionary and add to AVL AVL
-void readFiletoAVL(Node* root) {
+Node* readFiletoAVL(Node* root) {
 	fstream file;
 	file.open("DictionaryFull.csv", ios::in);
 	string line, word, partOfSpeech, definition;
@@ -42,15 +43,17 @@ void readFiletoAVL(Node* root) {
 		getline(s, word, ',');
 		getline(s, partOfSpeech, ',');
 		getline(s, definition, ',');
+		//AVL.setRoot(insert(AVL.getRoot(), name, ID));
 		root = insert(root, word, partOfSpeech, definition);
 	}
 	file.close();
+	return root;
 }
 
 //compares time between using Trie and AVL
 void timeComp(microseconds timeTrie, microseconds timeAVL) {
-	if (timeTrie.count() < timeAVL.count()) {
-		cout << "The AVL is " << ((timeTrie.count()-timeAVL.count())/timeTrie.count())*100 << "% faster." << endl;
+	if (timeTrie.count() > timeAVL.count()) {
+		cout << "The AVL Tree is " << ((timeTrie.count()-timeAVL.count())/timeTrie.count())*100 << "% faster." << endl;
 	} else {
 		cout << "The Trie is " << ((timeAVL.count()-timeTrie.count())/timeAVL.count())*100 << "% faster." << endl;
 	}
@@ -140,6 +143,7 @@ void definitionFinder(Node* root, string mode, string input) {
 	microseconds findDefDurationTrie, findDefDurationAVL;
 	if (mode == "Trie" || mode == "Comparison") {
 		auto start = high_resolution_clock::now();
+		cout << "timing function starts" << endl;
 		def = findDefinitionTrie(input); //**simple, returns definition
 		auto stop = high_resolution_clock::now();
 		findDefDurationTrie = duration_cast<microseconds>(stop - start);
@@ -186,15 +190,17 @@ void definitionFinder(Node* root, string mode, string input) {
 }
 
 int main() {
-	Node* root = NULL;
+	Node* rootAVL = NULL;
+	Node* rootTrie = NULL;
+	//AVLTree AVL(root);
 	//reads file and adds to Data Structures, tracking time it takes
 	auto start = high_resolution_clock::now();
-	readFiletoTrie();
+	rootTrie = readFiletoTrie(rootTrie);
 	auto stop = high_resolution_clock::now();
 	auto TrieDuration = duration_cast<microseconds>(stop - start);
 	cout << TrieDuration.count()/1000000.0 << " seconds to create the Trie dictionary." << endl;
 	auto start2 = high_resolution_clock::now();
-	readFiletoAVL(root);
+	rootAVL = readFiletoAVL(rootAVL);
 	auto stop2 = high_resolution_clock::now();
 	auto AVLDuration = duration_cast<microseconds>(stop2 - start2);
 	cout << AVLDuration.count()/1000000.0 << " seconds to create the AVL dictionary." << endl;
@@ -218,7 +224,7 @@ int main() {
 			cout << "\n\tType '#Exit' to exit the program anytime" << endl; //#7
 		}
 		else if (input == "#SpellChecker" || input == "#spellchecker" || input == "#Spellchecker" || input == "#spellChecker") {
-			spellChecker(root, mode);//enter spell checker mode
+			spellChecker(rootAVL, mode);//enter spell checker mode
 		}
 		else if (input == "1") {//change to Trie mode
 			if (mode == "Trie") {
@@ -235,10 +241,7 @@ int main() {
 				cout << ".";
 				fflush(stdout);
 				sleep_for(milliseconds(500));
-				cout << ".";
-				fflush(stdout);
-				sleep_for(milliseconds(500));
-				cout << endl;
+				cout << ".\n";
 			}
 		}
 		else if (input == "2") {//change to AVL mode
@@ -256,10 +259,7 @@ int main() {
 				cout << ".";
 				fflush(stdout);
 				sleep_for(milliseconds(500));
-				cout << ".";
-				fflush(stdout);
-				sleep_for(milliseconds(500));
-				cout << endl;
+				cout << ".\n";
 			}
 		}
 		else if (input == "3") {//change to comparison mode
@@ -277,17 +277,14 @@ int main() {
 				cout << ".";
 				fflush(stdout);
 				sleep_for(milliseconds(500));
-				cout << ".";
-				fflush(stdout);
-				sleep_for(milliseconds(500));
-				cout << endl;
+				cout << ".\n";
 			}
 		}
 		else if (input == "#Exit" || input == "#exit") {//exit program
 			return 0;
 		}
 		else {//finds definition
-			definitionFinder(root, mode, input);
+			definitionFinder(rootAVL, mode, input);
 		}
 	}
 	return 0;

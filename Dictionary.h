@@ -5,7 +5,7 @@ Authors: Andrew Restivo, Darren Peters, Adam Slavny
 COP3530 - Data Structures
 Project 3: Dictionary and Spell Checker
 Language: C++
-Data Structures used: AVL Tree and Trie Tree
+Data Structures used: AVL Tree and Trie
 functions:
     find definition
     spell check
@@ -39,6 +39,27 @@ public:
 	int height;
 	Node* left;
 	Node* right;
+};
+
+class AVLTree {
+    public:
+        Node* root;
+        //constructors
+        AVLTree(){
+            root = NULL;
+        }
+        AVLTree(Node* z) {
+            root = z;
+        }
+
+    //sets root of tree
+    void setRoot(Node* n) {
+      root = n;
+    }
+    //returns tree root
+    Node* getRoot(){
+        return root;
+    }
 };
 
 //methods for AVL
@@ -157,10 +178,53 @@ Node* insert(Node* node, string input_word, string input_partOfSpeech, string in
 }
 
 string findDefinitionAVL(Node* node, string word) {
-	string def = "DNE";
-	//def = definition
-	return def;
+	//searches tree for word
+	cout << "enters function" << endl;
+    if (node == NULL) {
+        //if node is nothing (beyond leaves), word NOT found
+		cout << "if this happens before compare, root is NULL" << endl;
+        return "DNE";
+    } else if (node->word == word){
+        //if node is word, return word
+        return node->word;
+    } else{
+		if (word.compare(node->word) < 0){
+            //if word less than node word, search left
+            //recursively call find to check left subtree
+			cout << "compare left" << endl;
+            return findDefinitionAVL(node->left, word);
+        } else if (word.compare(node->word) > 0){
+            //if word greater than node word, search right
+            //recursively call find to check right subtree
+			cout << "compare right" << endl;
+            return findDefinitionAVL(node->right, word);
+        }
+	}
+	return "DNE";
 }
+/*
+Node* searchID(Node* root, string ID) {
+    //searches tree for ID
+    if (root == NULL) {
+        //if node is nothing (beyond leaves), ID NOT found
+        return NULL;
+    } else if (root->ID == ID){
+        //if node has ID, return node
+        return root;
+    } else{
+        if (ID.compare(root->ID) < 0){
+            //if ID less than node ID, search left
+            //recursively call find to check left subtree
+            return searchID(root->left, ID);
+        } else if (ID.compare(root->ID) > 0){
+            //if ID greater than node ID, search right
+            //recursively call find to check right subtree
+            return searchID(root->right, ID);
+        }
+    }
+    return root;
+}
+*/
 
 string spellCheckAVL(Node* node, string word) {
 	string def = "DNE";

@@ -2,6 +2,7 @@
     "files.associations": {
         "chrono": "cpp",
         "iosfwd": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "thread": "cpp"
     }
 }
