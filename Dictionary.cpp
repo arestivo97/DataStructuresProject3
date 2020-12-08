@@ -205,7 +205,6 @@ int main() {
 	auto AVLDuration = duration_cast<microseconds>(stop2 - start2);
 	cout << AVLDuration.count()/1000000.0 << " seconds to create the AVL dictionary." << endl;
 	timeComp(TrieDuration, AVLDuration);
-	cout << "root: " << rootAVL->word << " - " << rootAVL->definition << endl;
 	string mode = "Trie";
 	string input = "";
 	while (input != "#Exit") {
@@ -217,6 +216,8 @@ int main() {
 		if (input == "#Help" || input == "#help") {
 			cout << "\nInstructions for using Dictionary and Spell Checker:";
 			cout << "\n\tType '[a word]' to check if it is a word and find the definition"; //#8
+			cout << "\n\t\tNote: You must capitalize the first letter of the searched word.";
+			cout << "\n\t\tIf you are searching for a suffix or prefix, make sure to add the appropriate hyphen.";
 			cout << "\n\tType '#SpellChecker' to enter words, sentences, or longer"; //#2
 			cout << "\n\tType '1' for Trie dictionary mode"; //#3
 			cout << "\n\tType '2' for AVL AVL dictionary mode"; //#4

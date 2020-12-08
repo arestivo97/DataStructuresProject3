@@ -178,20 +178,65 @@ void printInorder(Node* head, vector<string>* ptrWL) {
 	}
 }
 
+//uses Levenshtein Distance to calculate the closest word
 string spellCheckAVL(Node* current, string word) {
-    vector<string> wordList;
+	string closestWord = "DNE"; //word to return
+	int distclosestWord = 10000; //initialize LD value to very large
+	int dist[50][50]; //matrix for Levenshtein Distance
+
+	//set word to correct as char array
+	char wordToCorrect[word.length() + 1];
+	strcpy(wordToCorrect, word.c_str());
+	int l1 = strlen(wordToCorrect);
+
+	//vector of words
+	vector<string> wordList;
 	vector<string>* ptrWordList = &wordList;
 	printInorder(current, ptrWordList);
-	string suggestedWord;
-	int switchKey = 0;
+	//loop through entire tree
 	for (unsigned int i = 0; i < wordList.size(); i++) {
-		if (wordList[i] > word && switchKey == 0) {
-			suggestedWord = wordList[i];
-			switchKey = 1;
+		int t,track;
+		//set word to compare to word to correct as char array
+		char wordToCompare[wordList[i].length() + 1];
+		strcpy(wordToCompare, wordList[i].c_str());
+		int l2 = strlen(wordToCompare);
+		//set first row to 0 - l1
+		for(int j = 0; j <= l1; j++) {
+			dist[0][j] = j;
+		}
+		//set first column to 0 - l2
+		for(int k = 0; k <= l2; k++) {
+			dist[k][0] = k;
+		}
+		//loops through every letter pair of each word to determine if its equal
+		for (int m = 1; m <= l1; m++) {
+			for(int n = 1; n <= l2; n++) {
+				//if the letter in word to compare is in word to correct
+				if(wordToCorrect[n - 1] == wordToCompare[m - 1]) {
+					track = 0;
+				} else {
+					track = 1;
+				}
+				if ((dist[n - 1][m] + 1) < (dist[n][m - 1] + 1)) {
+					t = (dist[n - 1][m] + 1);
+				} else {
+					t = (dist[n][m - 1] + 1);
+				}
+				//set distance of letter position
+				if (t < (dist[n - 1][m - 1] + track)) {
+					dist[n][m] = t;
+				} else {
+					dist[n][m] = (dist[n - 1][m - 1] + track);
+				}
+			}
+		}
+		//if current word is closer than the previous closest, update stored word and value
+		if (dist[l2][l1] < distclosestWord) {
+			distclosestWord = dist[l2][l1];
+			closestWord = wordList[i];
 		}
 	}
-	cout << endl;
-	return suggestedWord;
+   	return closestWord;
 }
 
 //class Trie
