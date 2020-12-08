@@ -140,7 +140,6 @@ void spellChecker(Node* root, string mode, string input) {
 
 void definitionFinder(Node* root, string mode, string input) {
 	string def = "DNE";
-	cout << root->word << endl;
 	microseconds findDefDurationTrie, findDefDurationAVL;
 	if (mode == "Trie" || mode == "Comparison") {
 		auto start = high_resolution_clock::now();
@@ -151,7 +150,6 @@ void definitionFinder(Node* root, string mode, string input) {
 	else if (mode == "AVL" || mode == "Comparison") {
 		//find using AVL *comparison will run both
 		auto start2 = high_resolution_clock::now();
-		cout << "timing function starts" << endl;
 		def = findDefinitionAVL(root, input); //**simple, returns definition
 		auto stop2 = high_resolution_clock::now();
 		findDefDurationAVL = duration_cast<microseconds>(stop2 - start2);
@@ -192,7 +190,6 @@ void definitionFinder(Node* root, string mode, string input) {
 
 int main() {
 	Node* rootAVL = NULL;
-	Node* rootTrie = NULL;
 	//reads file and adds to Data Structures, tracking time it takes
 	auto start = high_resolution_clock::now();
 	rootTrie = readFiletoTrie(rootTrie);
@@ -245,13 +242,13 @@ int main() {
 				cout << ".\n";
 			}
 		}
-		else if (input == "2") {//change to AVL mode
+		else if (input == "2") {//change to AVL Tree mode
 			if (mode == "AVL") {
-				cout << "It is already in AVL AVL mode!" << endl;
+				cout << "It is already in AVL Tree mode!" << endl;
 			}
 			else {
 				mode = "AVL";
-				cout << "Changing mode to AVL";
+				cout << "Changing mode to AVL Tree";
 				fflush(stdout);
 				sleep_for(milliseconds(500));
 				cout << ".";
@@ -285,7 +282,7 @@ int main() {
 			return 0;
 		}
 		else {//finds definition
-			definitionFinder(rootAVL, mode, input);
+			definitionFinder(rootAVL, Trie, mode, input);
 		}
 	}
 	return 0;
