@@ -19,6 +19,7 @@ functions:
 #include <chrono>
 #include <thread>
 #include <math.h>
+#include <unordered_map>
 using namespace std;
 #ifndef Dictionary_H
 #define Dictionary_H
@@ -239,25 +240,73 @@ string spellCheckAVL(Node* current, string word) {
    	return closestWord;
 }
 
+
+//Start of Trie
 //class Trie
 
+// Structure for Trie
+struct Trie {
+    bool isWord;
+    unordered_map<char, Trie*> map;
+    string meaning;
+};
 
-
-//methods for Trie
-
-
-
-
-
-
-
-
-
-string findDefinitionTrie(string word) {
-	string def = "DNE";
-	//def = definition
-	return def;
+// create a new Trie node
+Trie* getNewTrieNode()
+{
+    Trie* node = new Trie;
+    node->isWord = false;
+    return node;
 }
+
+// Function to insert a word with its meaning
+void insert(Trie*& root, const string& str, const std::string& type,const string& def)
+{
+
+    // If root is null
+    if (root == NULL)
+        root = getNewTrieNode();
+
+    Trie* temp = root;
+    for (int i = 0; i < str.length(); i++) {
+        char x = str[i];
+
+        // Make a new node if there is no path
+        if (temp->map.find(x) == temp->map.end())
+            temp->map[x] = getNewTrieNode();
+
+        temp = temp->map[x];
+    }
+
+    // Mark end of word and store the meaning
+    temp->isWord = true;
+    temp->meaning = type+ ", " + def;
+}
+
+// Function to search a word in the Trie
+// and return its meaning if the word exists
+string findDefinitionTrie(Trie* root, const string& word)
+{
+
+    // If root is null i.e. the dictionary is empty
+    if (root == NULL)
+        return "DNE";
+
+    Trie* temp = root;
+
+    // Search a word in the Trie
+    for (int i = 0; i < word.length(); i++) {
+        temp = temp->map[word[i]];
+        if (temp == NULL)
+            return "DNE";
+    }
+
+    // returns meaning of word
+    if (temp->isWord)
+        return temp->meaning;
+    return "DNE";
+}
+
 
 string spellCheckTrie(string word) {
 	string def = "DNE";
