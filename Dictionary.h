@@ -280,7 +280,7 @@ void insertTrie(Trie*& root, const string& str, const std::string& type,const st
 
     // store the meaning
     temp->isWord = true;
-    temp->meaning = type+ " " + def;
+    temp->meaning = type + " " + def;
 }
 
 // Function to search a word in the Trie
@@ -309,10 +309,63 @@ string findDefinitionTrie(Trie* root, const string& word)
 }
 
 
-string spellCheckTrie(string word) {
-    string def = "DNE";
-    //def = definition
-    return def;
+string spellCheckTrie(string word, vector<string>* ptrTrieList) {
+    string closestWord = "DNE"; //word to return
+    int distclosestWord = 10000; //initialize LD value to very large
+    int dist[50][50]; //matrix for Levenshtein Distance
+
+    //set word to correct as char array
+    char wordToCorrect[word.length() + 1];
+    strcpy(wordToCorrect, word.c_str());
+    int l1 = strlen(wordToCorrect);
+
+    //vector of words
+    vector<string> wordList = *ptrTrieList;
+
+    //loop through entire tree
+    for (unsigned int i = 0; i < wordList.size(); i++) {
+        int t,track;
+        //set word to compare to word to correct as char array
+        char wordToCompare[wordList[i].length() + 1];
+        strcpy(wordToCompare, wordList[i].c_str());
+        int l2 = strlen(wordToCompare);
+        //set first row to 0 - l1
+        for(int j = 0; j <= l1; j++) {
+            dist[0][j] = j;
+        }
+        //set first column to 0 - l2
+        for(int k = 0; k <= l2; k++) {
+            dist[k][0] = k;
+        }
+        //loops through every letter pair of each word to determine if its equal
+        for (int m = 1; m <= l1; m++) {
+            for(int n = 1; n <= l2; n++) {
+                //if the letter in word to compare is in word to correct
+                if(wordToCorrect[n - 1] == wordToCompare[m - 1]) {
+                    track = 0;
+                } else {
+                    track = 1;
+                }
+                if ((dist[n - 1][m] + 1) < (dist[n][m - 1] + 1)) {
+                    t = (dist[n - 1][m] + 1);
+                } else {
+                    t = (dist[n][m - 1] + 1);
+                }
+                //set distance of letter position
+                if (t < (dist[n - 1][m - 1] + track)) {
+                    dist[n][m] = t;
+                } else {
+                    dist[n][m] = (dist[n - 1][m - 1] + track);
+                }
+            }
+        }
+        //if current word is closer than the previous closest, update stored word and value
+        if (dist[l2][l1] < distclosestWord) {
+            distclosestWord = dist[l2][l1];
+            closestWord = wordList[i];
+        }
+    }
+    return closestWord;
 }
 
 #endif /* Dictionary_H */
