@@ -243,7 +243,6 @@ string spellCheckAVL(Node* current, string word) {
 }
 
 
-//Start of Trie
 //class Trie
 
 // Structure for Trie
@@ -253,7 +252,7 @@ struct Trie {
     string meaning;
 };
 
-// create a new Trie node
+// make a new Trie node
 Trie* getNewTrieNode()
 {
     Trie* node = new Trie;
@@ -261,11 +260,10 @@ Trie* getNewTrieNode()
     return node;
 }
 
-// Function to insert a word with its meaning
+// insert a word with its def
 void insertTrie(Trie*& root, const string& str, const std::string& type,const string& def)
 {
 
-    // If root is null
     if (root == NULL)
         root = getNewTrieNode();
 
@@ -280,16 +278,15 @@ void insertTrie(Trie*& root, const string& str, const std::string& type,const st
         temp = temp->map[x];
     }
 
-    // Mark end of word and store the meaning
+    // store the meaning
     temp->isWord = true;
     temp->meaning = type+ " " + def;
 }
 
 // Function to search a word in the Trie
-// and return its meaning if the word exists
 string findDefinitionTrie(Trie* root, const string& word)
 {
-    // If root is null i.e. the dictionary is empty
+    // If dictionaries empty
     if (root == nullptr) {
         cout <<  "root is empty";
         return "DNE";
@@ -304,8 +301,8 @@ string findDefinitionTrie(Trie* root, const string& word)
             return "DNE";
     }
 
-    // If it is the end of a valid word stored
-    // before then return its meaning
+
+    //return its meaning
     if (temp->isWord)
         return temp->meaning;
     return "DNE";
